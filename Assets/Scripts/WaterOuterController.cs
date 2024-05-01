@@ -23,9 +23,11 @@ public class WaterOuterController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        this.GetComponent<AudioSource>().Play();
-        Instantiate(splashPrefab, new Vector3(other.gameObject.transform.position.x, this.GetComponent<BoxCollider2D>().bounds.center.y + this.GetComponent<BoxCollider2D>().bounds.extents.y + this.splashPrefab.GetComponent<SpriteRenderer>().bounds.extents.y, other.gameObject.transform.position.z), Quaternion.identity);
-
+        if (playerLayer == (playerLayer | (1 << other.gameObject.layer)))
+        {
+            this.GetComponent<AudioSource>().Play();
+            Instantiate(splashPrefab, new Vector3(other.gameObject.transform.position.x, this.GetComponent<BoxCollider2D>().bounds.center.y + this.GetComponent<BoxCollider2D>().bounds.extents.y + this.splashPrefab.GetComponent<SpriteRenderer>().bounds.extents.y, other.gameObject.transform.position.z), Quaternion.identity);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
