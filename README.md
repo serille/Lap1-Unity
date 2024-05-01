@@ -16,7 +16,7 @@ Just add this folder as a Unity project, you should then be able to build from t
 
 ## How to play
 
-Start the game by reaching the right side of the main menu screen. <!-- Uncomment when implemented: Every player on the right side of the fallen tree trunk will be part of the game. -->
+Start the game by reaching the right border of the main menu screen with any player. Every player on the right side of the fallen tree trunk will be part of the game.
 
 Controls (standard US QWERTY layout):
 
@@ -26,8 +26,6 @@ Controls (standard US QWERTY layout):
 - Player 4 (Mijji): G (up), V (left), N (right)
 
 These controls are layout-independent, and are located where the mentioned keys are located on a US QWERTY keyboard even if you are using other layouts. For example AZERTY keyboards would use Z, Q and D for Player 2
-
-The game have no end, just Alt+F4 or close the window when you're done with it. <!-- Uncomment when implemented: Press ESC to end the game and access the final scoreboard. Press ESC again to loop back to the main menu.-->
 
 ## Links
 
