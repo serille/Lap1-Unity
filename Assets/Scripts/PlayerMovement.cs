@@ -73,6 +73,8 @@ public class PlayerMovement : MonoBehaviour
     private bool dead = false;
     private float deathTime;
 
+    public int playerNum;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -124,33 +126,15 @@ public class PlayerMovement : MonoBehaviour
         float otherBottom = other.gameObject.GetComponent<BoxCollider2D>().bounds.center.y - other.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y;
 
         if (otherBottom >= selfTop - playerCollisionYTolerance) {
-            // RIP
-            UnityEngine.Debug.Log("X_X");
             this.Die();
         } else if (selfBottom >= otherTop - playerCollisionYTolerance) {
-            // Score
-            UnityEngine.Debug.Log("Splat!");
+            ScoreTracker.Instance.AddScore(this.playerNum, other.gameObject.GetComponent<PlayerMovement>().GetPlayerNum());
             rb.AddForce(new Vector2(rb.velocity.x, bumperJumpIntensity * 10));
         }
     }
 
-    // private void CheckSplat() {
-    //     RaycastHit2D ray = Physics2D.BoxCast(
-    //         new Vector3(transform.position.x + (groundCollisionBoxXOffset * flippedModifier),
-    //                     transform.position.y + groundCollisionBoxYOffset,
-    //                     transform.position.z
-    //         ),
-    //         groundCollisionBoxSize, 0, -transform.up, castDistance, playerLayer);
-
-    //     if (ray.collider == null || ray.collider.transform == this.transform) {
-    //         return;
-    //     }
-
-    //     ray.collider.transform.gameObject.GetComponent<PlayerMovement>().Die();
-    // }
     private void UpdateAnimations()
     {
-
         anim.SetBool("isRunning", inputMovement != 0);
         anim.SetBool("isGrounded", grounded);
 
@@ -294,6 +278,11 @@ public class PlayerMovement : MonoBehaviour
         onWaterSurface = false;
         rb.gravityScale = defaultGravityScale;
         rb.drag = 0;
+    }
+
+    public int GetPlayerNum()
+    {
+        return this.playerNum;
     }
 
     private void OnDrawGizmos()
