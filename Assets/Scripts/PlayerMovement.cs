@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
 
     private AudioSource audioSource;
-    private Vector2 ColliderSize;
 
     public AudioClip jumpAudio;
     public AudioClip deathAudio;
@@ -80,9 +79,11 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-        ColliderSize = GetComponent<BoxCollider2D>().size;
+
         lastY = transform.position.y;
         slippery = false;
+        // Reset Water physics change on spawn
+        this.leaveWater();
     }
 
     // Update is called once per frame
@@ -116,11 +117,11 @@ public class PlayerMovement : MonoBehaviour
         if (playerLayer != (playerLayer | (1 << other.gameObject.layer))) {
             return;
         }
-        float selfTop = rb.transform.position.y + ColliderSize.y / 2;
-        float selfBottom = rb.transform.position.y - ColliderSize.y / 2;
+        float selfTop = this.GetComponent<BoxCollider2D>().bounds.center.y + this.GetComponent<BoxCollider2D>().bounds.extents.y;
+        float selfBottom = this.GetComponent<BoxCollider2D>().bounds.center.y - this.GetComponent<BoxCollider2D>().bounds.extents.y;
 
-        float otherTop = other.gameObject.transform.position.y + other.gameObject.GetComponent<BoxCollider2D>().size.y / 2;
-        float otherBottom = other.gameObject.transform.position.y - other.gameObject.GetComponent<BoxCollider2D>().size.y / 2;
+        float otherTop = other.gameObject.GetComponent<BoxCollider2D>().bounds.center.y + other.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y;
+        float otherBottom = other.gameObject.GetComponent<BoxCollider2D>().bounds.center.y - other.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y;
 
         if (otherBottom >= selfTop - playerCollisionYTolerance) {
             // RIP
@@ -171,10 +172,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown(playerName + " - Jump"))
         {
             if (grounded || onWaterSurface) {
-                if (onWaterSurface) {
-                    onWaterSurface = false;
-                    rb.gravityScale = defaultGravityScale;
-                }
                 rb.AddForce(new Vector2(rb.velocity.x, jumpAmplitude * 10));
                 audioSource.clip = jumpAudio;
                 audioSource.Play();
@@ -287,11 +284,16 @@ public class PlayerMovement : MonoBehaviour
         rb.drag = 10;
     }
 
-    public void leaveWater() {
+    public void surfaceWater() {
         rb.gravityScale = 0;
         rb.velocity = new Vector2(rb.velocity.x, 0);
-        rb.drag = 0;
         onWaterSurface = true;
+    }
+
+    public void leaveWater() {
+        onWaterSurface = false;
+        rb.gravityScale = defaultGravityScale;
+        rb.drag = 0;
     }
 
     private void OnDrawGizmos()
