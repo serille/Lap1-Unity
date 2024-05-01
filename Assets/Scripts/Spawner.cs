@@ -10,10 +10,7 @@ public class Spawner : MonoBehaviour
     private Queue<float> closedTime;
     private List<int> opened;
 
-    public GameObject DottPrefab;
-    public GameObject JiffyPrefab;
-    public GameObject FizzPrefab;
-    public GameObject MijjiPrefab;
+    public GameObject[] playerPrefabs;
 
     public float reopenTime;
     // Start is called before the first frame update
@@ -41,11 +38,14 @@ public class Spawner : MonoBehaviour
         opened.Add(7);
         closed = new Queue<int>();
         closedTime = new Queue<float>();
-    
-        this.SpawnPrefab(DottPrefab);
-        this.SpawnPrefab(JiffyPrefab);
-        this.SpawnPrefab(FizzPrefab);
-        this.SpawnPrefab(MijjiPrefab);
+
+        for (int i = 0; i < GameData.playersInGame.Length; i++)
+        {
+            if (GameData.playersInGame[i])
+            {
+                this.SpawnPrefab(playerPrefabs[i]);
+            }
+        }
     }
 
     // Update is called once per frame

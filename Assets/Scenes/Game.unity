@@ -4034,10 +4034,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9a46f74c47a154199411e75dfa14fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DottPrefab: {fileID: 5065588575716105493, guid: 1d26ab823ccdec647b459237bc3b9178, type: 3}
-  JiffyPrefab: {fileID: 1917911379586843403, guid: 22f5b406769fffe48997643c48499a95, type: 3}
-  FizzPrefab: {fileID: 5333828445796178359, guid: 5ad3c3a5784f2ee4eb8e5ed40c39abb9, type: 3}
-  MijjiPrefab: {fileID: 6780109299155159856, guid: 9ba75007f85d2a54d9290183f00a428d, type: 3}
+  playerPrefabs:
+  - {fileID: 5065588575716105493, guid: 1d26ab823ccdec647b459237bc3b9178, type: 3}
+  - {fileID: 1917911379586843403, guid: 22f5b406769fffe48997643c48499a95, type: 3}
+  - {fileID: 5333828445796178359, guid: 5ad3c3a5784f2ee4eb8e5ed40c39abb9, type: 3}
+  - {fileID: 6780109299155159856, guid: 9ba75007f85d2a54d9290183f00a428d, type: 3}
   reopenTime: 15
 --- !u!4 &1650965903
 Transform:
