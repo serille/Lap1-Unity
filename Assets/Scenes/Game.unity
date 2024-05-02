@@ -2849,7 +2849,7 @@ MonoBehaviour:
   SpawnPositionOffset: {x: -5, y: -1}
   playerClosenessThreshold: 0.7
   flyCount: 100
-  flySpeed: 0.005
+  flySpeed: 0.018
 --- !u!82 &1122735316
 AudioSource:
   m_ObjectHideFlags: 0
