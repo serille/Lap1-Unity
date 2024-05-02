@@ -22,6 +22,7 @@ public class Spawner : MonoBehaviour
     public int butterflyCount;
 
     public float reopenTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -83,7 +84,7 @@ public class Spawner : MonoBehaviour
             closedTime.Dequeue();
         }
         int i = UnityEngine.Random.Range(0, opened.Count - 1);
-        Instantiate(prefab, SpawnPositions[opened[i]], Quaternion.identity);
+        GameData.playerObjects[prefab.GetComponent<PlayerMovement>().GetPlayerNum()] = Instantiate(prefab, SpawnPositions[opened[i]], Quaternion.identity);
         closed.Enqueue(opened[i]);
         closedTime.Enqueue(Time.time);
         opened.RemoveAt(i);
