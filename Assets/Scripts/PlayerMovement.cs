@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void UpdateDeath() {
         if (Time.time - deathDelay > deathTime) {
-            GameObject.Find("SpawnPoints").GetComponent<Spawner>().SpawnPrefab(this.ownPrefab);
+            GameObject.Find("Spawner").GetComponent<Spawner>().SpawnPrefab(this.ownPrefab);
             Destroy(this.gameObject);
         }
     }

@@ -12,6 +12,15 @@ public class Spawner : MonoBehaviour
 
     public GameObject[] playerPrefabs;
 
+    public GameObject[] butterflyPrefabs;
+
+    public float butterflySpawnMinX;
+    public float butterflySpawnMaxX;
+    public float butterflySpawnMinY;
+    public float butterflySpawnMaxY;
+
+    public int butterflyCount;
+
     public float reopenTime;
     // Start is called before the first frame update
     void Start()
@@ -44,6 +53,15 @@ public class Spawner : MonoBehaviour
             if (GameData.playersInGame[i])
             {
                 this.SpawnPrefab(playerPrefabs[i]);
+            }
+        }
+
+        if (butterflyCount > 0)
+        {
+            for (int i = 0; i < butterflyCount; i++)
+            {
+                Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(butterflySpawnMinX, butterflySpawnMaxX), UnityEngine.Random.Range(butterflySpawnMinY, butterflySpawnMaxY), 0);
+                Instantiate(butterflyPrefabs[i % 2], spawnPosition, Quaternion.identity);
             }
         }
     }

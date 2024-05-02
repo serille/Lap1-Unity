@@ -4132,7 +4132,7 @@ GameObject:
   - component: {fileID: 1650965903}
   - component: {fileID: 1650965902}
   m_Layer: 0
-  m_Name: SpawnPoints
+  m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4155,6 +4155,14 @@ MonoBehaviour:
   - {fileID: 1917911379586843403, guid: 22f5b406769fffe48997643c48499a95, type: 3}
   - {fileID: 5333828445796178359, guid: 5ad3c3a5784f2ee4eb8e5ed40c39abb9, type: 3}
   - {fileID: 6780109299155159856, guid: 9ba75007f85d2a54d9290183f00a428d, type: 3}
+  butterflyPrefabs:
+  - {fileID: 3858251991677774953, guid: 850c62fdcc7c74e4aa0e05ca74fec4a6, type: 3}
+  - {fileID: 4492169432922957287, guid: 9718d48e8e6c6e44d822bc32eae22ed7, type: 3}
+  butterflySpawnMinX: -7
+  butterflySpawnMaxX: 5.1
+  butterflySpawnMinY: -3.5
+  butterflySpawnMaxY: 4.25
+  butterflyCount: 4
   reopenTime: 15
 --- !u!4 &1650965903
 Transform:
