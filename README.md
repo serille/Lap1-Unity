@@ -1,10 +1,10 @@
 # Lap1-Unity
 
-This is a copy of Jump'n'bump, a game by Brainchild Design made in 1998. Made with Unity.
+This is a rewrite of Jump'n'bump, a game by Brainchild Design made in 1998. Made with Unity.
 
 ## About The Project
 
-This project was made for learning and practicing making 2D Games with Unity. It uses the original game's assets but does not reproduce the original game accurately.
+This project was made for learning and practicing making 2D Games with Unity. It uses the original game's sprites and sounds but does not reproduce the original game accurately.
 
 Since this project is just for learning and practice, expect bugs and general wonkiness. 
 
