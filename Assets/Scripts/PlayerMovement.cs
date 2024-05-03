@@ -67,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
     public float playerCollisionYTolerance;
 
     public GameObject ownPrefab;
+    public GameObject smokePrefab;
 
     public float deathDelay;
 
@@ -74,6 +75,11 @@ public class PlayerMovement : MonoBehaviour
     private float deathTime;
 
     public int playerNum;
+
+    public float smokeSpeedThreshold;
+    public int numSmokePuffs;
+
+    public float maxSmokeXOffset;
 
     // Start is called before the first frame update
     void Start()
@@ -180,6 +186,7 @@ public class PlayerMovement : MonoBehaviour
         if (grip_resistance < 0) {
             grip_resistance = 0;
         }
+        float oldMovement = movement;
         movement = movement * grip_resistance;
         movement += inputMovement * movementAcceleration * grip * deltaTime;
 
@@ -194,7 +201,21 @@ public class PlayerMovement : MonoBehaviour
             movement = -speed;
         }
 
+        if (grounded && oldMovement > smokeSpeedThreshold && movement < smokeSpeedThreshold)
+        {
+            for (int i = 0; i < numSmokePuffs; i++)
+            {
+                Vector2 smokePosition = new Vector2(this.transform.position.x + UnityEngine.Random.Range(0, -maxSmokeXOffset * flippedModifier), this.transform.position.y - this.GetComponent<Collider2D>().bounds.extents.y / 2 + UnityEngine.Random.Range(-0.05f, 0.05f));
+                Instantiate(smokePrefab, smokePosition, Quaternion.identity);
+            }
+        }
+
         rb.velocity = new Vector2(movement, rb.velocity.y);
+    }
+
+    private void CreateSmokePuffs()
+    {
+
     }
 
     private bool isSlippery()
