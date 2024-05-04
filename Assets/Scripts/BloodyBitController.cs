@@ -16,7 +16,7 @@ public class BloodyBitController : MonoBehaviour
     {
         this.GetComponent<SpriteRenderer>().sprite = sprites[(int)Random.Range(0, sprites.Length)];
         // have a low probability that the object stays on permanently
-        if (Random.value > .2f)
+        if (Random.value > .05f)
         {
             Destroy(this.gameObject, destroyDelay);
         }
