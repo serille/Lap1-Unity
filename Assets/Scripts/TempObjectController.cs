@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SmokeController : MonoBehaviour
+public class TempObjectController : MonoBehaviour
 {
     public float ySpeed;
+    public float destroyDelay;
     // Start is called before the first frame update
     void Start()
     {
-        Destroy(this.gameObject, .5f);
+        Destroy(this.gameObject, destroyDelay);
     }
 
     // Update is called once per frame

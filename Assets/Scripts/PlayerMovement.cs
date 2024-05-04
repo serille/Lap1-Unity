@@ -81,6 +81,10 @@ public class PlayerMovement : MonoBehaviour
 
     public float maxSmokeXOffset;
 
+    public GameObject bloodyBitPrefab;
+    public int bloodyBitCount;
+    public float maxBloodyBitSpawnForce;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -118,6 +122,21 @@ public class PlayerMovement : MonoBehaviour
         deathTime = Time.time;
         dead = true;
         anim.SetTrigger("Dead");
+        SpawnBloodyBits();
+    }
+
+    private void SpawnBloodyBits()
+    {
+        for (int i = 0; i < bloodyBitCount; i++)
+        {
+            Vector2 bbitForce = UnityEngine.Random.insideUnitCircle.normalized * UnityEngine.Random.Range(0.0f, maxBloodyBitSpawnForce);
+            if (bbitForce.y < 0)
+            {
+                bbitForce.y *= -1;
+            }
+            GameObject bbit = Instantiate(bloodyBitPrefab, this.transform.position, Quaternion.identity);
+            bbit.GetComponent<Rigidbody2D>().AddForce(bbitForce);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D col) {
@@ -211,11 +230,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.velocity = new Vector2(movement, rb.velocity.y);
-    }
-
-    private void CreateSmokePuffs()
-    {
-
     }
 
     private bool isSlippery()
