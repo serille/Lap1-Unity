@@ -15,8 +15,8 @@ public class MenuDisplayController : MonoBehaviour
     {
         if (Input.GetButtonDown("Cancel"))
         {
-            Debug.Log("pressed esc!");
             this.gameObject.transform.GetChild(0).gameObject.SetActive(!this.gameObject.transform.GetChild(0).gameObject.activeSelf);
+            this.gameObject.transform.GetChild(1).gameObject.SetActive(!this.gameObject.transform.GetChild(1).gameObject.activeSelf);
         }
     }
 }
