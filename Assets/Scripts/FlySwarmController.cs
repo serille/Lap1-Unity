@@ -15,6 +15,8 @@ public class FlySwarmController : MonoBehaviour
     public int flyCount;
     public float flySpeed;
 
+    private float audioVolume;
+
     private GameObject[] flies;
     private AudioSource audioSource;
 
@@ -27,6 +29,10 @@ public class FlySwarmController : MonoBehaviour
         {
             flies[i] = Instantiate(flyPrefab, (Random.insideUnitCircle * outerRadius) + (Vector2)this.transform.position, Quaternion.identity); 
         }
+
+        EventManager.fliesVolumeChanged.AddListener(FliesVolumeChanged);
+        audioSource.volume = GameData.fliesVolume;
+        audioVolume = GameData.fliesVolume;
     }
 
     // Update is called once per frame
@@ -38,6 +44,16 @@ public class FlySwarmController : MonoBehaviour
         {
             UpdateFly(center, flies[i]);
         }
+    }
+
+    public void OnDestroy()
+    {
+        EventManager.fliesVolumeChanged.RemoveListener(FliesVolumeChanged);
+    }
+
+    public void FliesVolumeChanged()
+    {
+        audioSource.volume = GameData.fliesVolume;
     }
 
     Vector2 GetSwarmCenter()
@@ -57,7 +73,7 @@ public class FlySwarmController : MonoBehaviour
         GameObject closest = GetClosestPlayer(center);
         if (closest != null)
         {
-            audioSource.volume = 0.33f - ((Vector2)closest.transform.position - center).magnitude / 10;
+            audioSource.volume = audioVolume - ((Vector2)closest.transform.position - center).magnitude / 10;
         }
     }
 

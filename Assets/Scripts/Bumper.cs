@@ -26,6 +26,9 @@ public class Bumper : MonoBehaviour
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         lastBump = 0;
+
+        EventManager.sfxVolumeChanged.AddListener(this.SfxVolumeChanged);
+        audioSource.volume = GameData.sfxVolume;
     }
 
     // Update is called once per frame
@@ -35,6 +38,16 @@ public class Bumper : MonoBehaviour
         if ((Time.time - lastBump > bumpDelay) && ray.collider != null) {
             this.PlayBump(ray.collider.transform.gameObject);
         }
+    }
+
+    public void OnDestroy()
+    {
+        EventManager.sfxVolumeChanged.RemoveListener(this.SfxVolumeChanged);
+    }
+
+    public void SfxVolumeChanged()
+    {
+        this.audioSource.volume = GameData.sfxVolume;
     }
 
     private RaycastHit2D getRay()

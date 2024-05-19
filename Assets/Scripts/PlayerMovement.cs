@@ -96,6 +96,9 @@ public class PlayerMovement : MonoBehaviour
         slippery = false;
         // Reset Water physics change on spawn
         this.leaveWater();
+
+        EventManager.sfxVolumeChanged.AddListener(SfxVolumeChanged);
+        audioSource.volume = GameData.sfxVolume;
     }
 
     // Update is called once per frame
@@ -107,6 +110,16 @@ public class PlayerMovement : MonoBehaviour
         }
         this.UpdateMovement();
         this.UpdateAnimations();
+    }
+
+    public void OnDestroy()
+    {
+        EventManager.sfxVolumeChanged.RemoveListener(SfxVolumeChanged);
+    }
+
+    public void SfxVolumeChanged()
+    {
+        audioSource.volume = GameData.sfxVolume;
     }
 
     public void UpdateDeath() {

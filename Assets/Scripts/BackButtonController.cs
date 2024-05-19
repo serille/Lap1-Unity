@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class mainMenuPanelButtonControler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class BackButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public IButtonBehavior buttonBehavior;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +29,6 @@ public class mainMenuPanelButtonControler : MonoBehaviour, IPointerEnterHandler,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        SceneManager.LoadScene("MainMenu");
-        ScoreTracker.Instance.ResetScores();
+        buttonBehavior.OnButtonClick(eventData);
     }
 }
