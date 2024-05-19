@@ -1,17 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime;
-using System.Security;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
     public String playerName;
     private Rigidbody2D rb;
+    private Collider2D playerCollider;
 
     private Animator anim;
 
@@ -47,10 +41,6 @@ public class PlayerMovement : MonoBehaviour
     public float groundCollisionBoxXOffset;
     public float groundCollisionBoxYOffset;
 
-    public float rightCollisionBoxXOffset;
-    public float rightCollisionBoxYOffset;
-    public float leftCollisionBoxXOffset;
-    public float leftCollisionBoxYOffset;
     public float castDistance;
 
     public float bumperJumpAllowDelay;
@@ -89,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerCollider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
@@ -226,16 +217,13 @@ public class PlayerMovement : MonoBehaviour
         movement = movement * grip_resistance;
         movement += inputMovement * movementAcceleration * grip * deltaTime;
 
-        if (movement > 0 && (flippedModifier > 0 && this.isCollideRight() || flippedModifier < 0 && this.isCollideLeft())) {
-            movement = 0;
-        } else if (movement < 0 && (flippedModifier > 0 && this.isCollideLeft() || flippedModifier < 0 && this.isCollideRight())) {
-            movement = 0;
-        }
         if (movement > speed) {
             movement = speed;
         } else if (movement < -speed) {
             movement = -speed;
         }
+
+        movement = CheckForGroundLateralCollision(movement);
 
         if (grounded && oldMovement > smokeSpeedThreshold && movement < smokeSpeedThreshold)
         {
@@ -247,6 +235,25 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.velocity = new Vector2(movement, rb.velocity.y);
+    }
+
+    private float CheckForGroundLateralCollision(float movement)
+    {
+        // Get Collider bounds
+        // Collide with only 10% of player's height to avoid collision with normal ground
+        Vector2 bottomRight = new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.max.y - (playerCollider.bounds.max.y - playerCollider.bounds.min.y) / 20);
+        Vector2 topLeft = new Vector2(playerCollider.bounds.min.x, playerCollider.bounds.min.y + (playerCollider.bounds.max.y - playerCollider.bounds.min.y) / 20);
+
+        // Move the collider in the direction we are moving
+        bottomRight += Vector2.right * movement * Time.fixedDeltaTime;
+        topLeft += Vector2.right * movement * Time.fixedDeltaTime;
+
+        // Check if the body's current velocity will result in a collision
+        if (Physics2D.OverlapArea(topLeft, bottomRight, groundLayer + iceLayer))
+        {
+            return 0;
+        }
+        return movement;
     }
 
     private bool isSlippery()
@@ -275,32 +282,6 @@ public class PlayerMovement : MonoBehaviour
                 ),
                 groundCollisionBoxSize, 0, -transform.up, castDistance, groundLayer)
             )
-        {
-            return true;
-        }
-        return false;
-    }
-
-    private bool isCollideRight() {
-        if (
-            Physics2D.BoxCast(
-                new Vector3(transform.position.x + (rightCollisionBoxXOffset * flippedModifier),
-                            transform.position.y + rightCollisionBoxYOffset,
-                            transform.position.z
-                ),
-                sideCollisionBoxSize, 0, transform.right * flippedModifier, castDistance, groundLayer))
-        {
-            return true;
-        }
-        return false;
-    }
-
-    private bool isCollideLeft() {
-        if (Physics2D.BoxCast(
-                new Vector3(transform.position.x + (leftCollisionBoxXOffset * flippedModifier),
-                            transform.position.y + leftCollisionBoxYOffset,
-                            transform.position.z
-                ), sideCollisionBoxSize, 0, -transform.right * flippedModifier, castDistance, groundLayer))
         {
             return true;
         }
@@ -344,15 +325,5 @@ public class PlayerMovement : MonoBehaviour
                             transform.position.y + groundCollisionBoxYOffset,
                             transform.position.z
             ) - transform.up * castDistance, groundCollisionBoxSize);
-        Gizmos.DrawWireCube(
-            new Vector3(transform.position.x + (rightCollisionBoxXOffset * flippedModifier),
-                            transform.position.y + rightCollisionBoxYOffset,
-                            transform.position.z
-            ) + transform.right * castDistance * flippedModifier, sideCollisionBoxSize);
-        Gizmos.DrawWireCube(
-            new Vector3(transform.position.x + (leftCollisionBoxXOffset * flippedModifier),
-                        transform.position.y + leftCollisionBoxYOffset,
-                        transform.position.z
-            ) - transform.right * castDistance * flippedModifier, sideCollisionBoxSize);
     }
 }
