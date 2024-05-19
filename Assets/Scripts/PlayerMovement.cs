@@ -43,10 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float castDistance;
 
-    public float bumperJumpAllowDelay;
-    public float bumperJumpIntensity;
-
-    private float lastBumperJump;
+    public float bumpJumpIntensity;
 
     public float waterSurfaceYOffset;
     private bool onWaterSurface;
@@ -162,7 +159,7 @@ public class PlayerMovement : MonoBehaviour
             this.Die();
         } else if (selfBottom >= otherTop - playerCollisionYTolerance && !other.gameObject.GetComponent<PlayerMovement>().dead) {
             ScoreTracker.Instance.AddScore(this.playerNum, other.gameObject.GetComponent<PlayerMovement>().GetPlayerNum());
-            rb.AddForce(new Vector2(rb.velocity.x, bumperJumpIntensity * 10));
+            rb.AddForce(new Vector2(rb.velocity.x, bumpJumpIntensity * 10));
         }
     }
 
@@ -192,8 +189,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(new Vector2(rb.velocity.x, jumpAmplitude * 10));
                 audioSource.clip = jumpAudio;
                 audioSource.Play();
-            } else if (Time.time - lastBumperJump < bumperJumpAllowDelay) {
-                rb.AddForce(new Vector2(rb.velocity.x, bumperJumpIntensity * 10));
             }
         }
 
@@ -289,7 +284,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void bumpPlayer(float intensity) {
-        lastBumperJump = Time.time;
         if (rb.velocity.y < 0) {
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
