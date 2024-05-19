@@ -85,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
         // Reset Water physics change on spawn
         this.leaveWater();
 
+        dead = false;
         EventManager.sfxVolumeChanged.AddListener(SfxVolumeChanged);
         audioSource.volume = GameData.sfxVolume;
     }
@@ -155,11 +156,10 @@ public class PlayerMovement : MonoBehaviour
         float otherTop = other.gameObject.GetComponent<BoxCollider2D>().bounds.center.y + other.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y;
         float otherBottom = other.gameObject.GetComponent<BoxCollider2D>().bounds.center.y - other.gameObject.GetComponent<BoxCollider2D>().bounds.extents.y;
 
-        if (otherBottom >= selfTop - playerCollisionYTolerance) {
-            this.Die();
-        } else if (selfBottom >= otherTop - playerCollisionYTolerance && !other.gameObject.GetComponent<PlayerMovement>().dead) {
+        if (selfBottom >= otherTop - playerCollisionYTolerance && !other.gameObject.GetComponent<PlayerMovement>().dead) {
             ScoreTracker.Instance.AddScore(this.playerNum, other.gameObject.GetComponent<PlayerMovement>().GetPlayerNum());
             rb.AddForce(new Vector2(rb.velocity.x, bumpJumpIntensity * 10));
+            other.gameObject.GetComponent<PlayerMovement>().Die();
         }
     }
 
@@ -235,9 +235,9 @@ public class PlayerMovement : MonoBehaviour
     private float CheckForGroundLateralCollision(float movement)
     {
         // Get Collider bounds
-        // Collide with only 10% of player's height to avoid collision with normal ground
-        Vector2 bottomRight = new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.max.y - (playerCollider.bounds.max.y - playerCollider.bounds.min.y) / 20);
-        Vector2 topLeft = new Vector2(playerCollider.bounds.min.x, playerCollider.bounds.min.y + (playerCollider.bounds.max.y - playerCollider.bounds.min.y) / 20);
+        // Collide with only the center on Y to avoid collision with slopes are slight variations in ground height
+        Vector2 bottomRight = new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.max.y - (playerCollider.bounds.max.y - playerCollider.bounds.min.y) / 2);
+        Vector2 topLeft = new Vector2(playerCollider.bounds.min.x, playerCollider.bounds.min.y + (playerCollider.bounds.max.y - playerCollider.bounds.min.y) / 2);
 
         // Move the collider in the direction we are moving
         bottomRight += Vector2.right * movement * Time.fixedDeltaTime;
