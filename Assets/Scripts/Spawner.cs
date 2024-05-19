@@ -1,54 +1,41 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    private Vector3[] SpawnPositions;
-    private Queue<int> closed;
-    private Queue<float> closedTime;
-    private List<int> opened;
-
+    // Prefabs of objects to be spawned
     public GameObject[] playerPrefabs;
-
     public GameObject[] butterflyPrefabs;
+    public GameObject flySwarmPrefab;
 
-    public float butterflySpawnMinX;
-    public float butterflySpawnMaxX;
-    public float butterflySpawnMinY;
-    public float butterflySpawnMaxY;
-
-    public int butterflyCount;
+    // Player spawn position data
+    private List<Vector2> spawnPositions = new List<Vector2>();
+    private Queue<int> closed = new Queue<int>();
+    private Queue<float> closedTime = new Queue<float>();
+    private List<int> opened = new List<int>();
 
     public float reopenTime;
+
+    // Random spawned objects data
+    public Vector2 randomPosSpawnMin;
+    public Vector2 randomPosSpawnMax;
+    public int butterflyCount = 4;
+    public int flySwarmCount = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        SpawnPositions = new Vector3[] {
-            GameObject.Find("Spawn 1").transform.position,
-            GameObject.Find("Spawn 2").transform.position,
-            GameObject.Find("Spawn 3").transform.position,
-            GameObject.Find("Spawn 4").transform.position,
-            GameObject.Find("Spawn 5").transform.position,
-            GameObject.Find("Spawn 6").transform.position,
-            GameObject.Find("Spawn 7").transform.position,
-            GameObject.Find("Spawn 8").transform.position
-        };
+        // Initialize available spawn positions
+        foreach (Transform child in transform)
+        {
+            spawnPositions.Add(child.position);
+        }
+        for (int i = 0; i < spawnPositions.Count; i++)
+        {
+            opened.Add(i);
+        }
 
-        opened = new List<int>();
-        opened.Add(0);
-        opened.Add(1);
-        opened.Add(2);
-        opened.Add(3);
-        opened.Add(4);
-        opened.Add(5);
-        opened.Add(6);
-        opened.Add(7);
-        closed = new Queue<int>();
-        closedTime = new Queue<float>();
-
+        // Spawn only players that were picked for the start of the game
         for (int i = 0; i < GameData.playersInGame.Length; i++)
         {
             if (GameData.playersInGame[i])
@@ -57,12 +44,23 @@ public class Spawner : MonoBehaviour
             }
         }
 
+        // Spawn butterflies
         if (butterflyCount > 0)
         {
             for (int i = 0; i < butterflyCount; i++)
             {
-                Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(butterflySpawnMinX, butterflySpawnMaxX), UnityEngine.Random.Range(butterflySpawnMinY, butterflySpawnMaxY), 0);
+                Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(randomPosSpawnMin.x, randomPosSpawnMax.x), UnityEngine.Random.Range(randomPosSpawnMin.y, randomPosSpawnMax.y), 0);
                 Instantiate(butterflyPrefabs[i % 2], spawnPosition, Quaternion.identity);
+            }
+        }
+
+        // Spawn fly swarms
+        if (flySwarmCount > 0)
+        {
+            for (int i = 0; i < flySwarmCount; i++)
+            {
+                Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(randomPosSpawnMin.x, randomPosSpawnMax.x), UnityEngine.Random.Range(randomPosSpawnMin.y, randomPosSpawnMax.y), 0);
+                Instantiate(flySwarmPrefab, spawnPosition, Quaternion.identity);
             }
         }
     }
@@ -70,6 +68,7 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Reopen "closed" spawn points after the set delay has passed
         while (closedTime.Count > 0 && Time.time - reopenTime > closedTime.Peek())
         {
             opened.Add(closed.Dequeue());
@@ -78,13 +77,17 @@ public class Spawner : MonoBehaviour
     }
 
     public void SpawnPrefab(GameObject prefab) {
-        // Force open a spawnPoint if none is available
+        // Force open a spawn point if none is available
         if (opened.Count < 1) {
             opened.Add(closed.Dequeue());
             closedTime.Dequeue();
         }
+
+        // Spawn the prefab at a randomly picked spawn point
         int i = UnityEngine.Random.Range(0, opened.Count - 1);
-        GameData.playerObjects[prefab.GetComponent<PlayerMovement>().GetPlayerNum()] = Instantiate(prefab, SpawnPositions[opened[i]], Quaternion.identity);
+        GameData.playerObjects[prefab.GetComponent<PlayerMovement>().GetPlayerNum()] = Instantiate(prefab, spawnPositions[opened[i]], Quaternion.identity);
+
+        // "close" the spawn point used
         closed.Enqueue(opened[i]);
         closedTime.Enqueue(Time.time);
         opened.RemoveAt(i);

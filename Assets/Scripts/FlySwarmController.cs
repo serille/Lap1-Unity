@@ -10,8 +10,6 @@ public class FlySwarmController : MonoBehaviour
     public float outerRadius;
     public float innerRadius;
 
-    public Vector2 SpawnPositionOffset;
-
     public float playerClosenessThreshold;
 
     public int flyCount;
@@ -27,7 +25,7 @@ public class FlySwarmController : MonoBehaviour
         flies = new GameObject[flyCount];
         for (int i = 0; i < flyCount; i++)
         {
-            flies[i] = Instantiate(flyPrefab, (Random.insideUnitCircle * outerRadius) + SpawnPositionOffset, Quaternion.identity); 
+            flies[i] = Instantiate(flyPrefab, (Random.insideUnitCircle * outerRadius) + (Vector2)this.transform.position, Quaternion.identity); 
         }
     }
 
@@ -55,6 +53,7 @@ public class FlySwarmController : MonoBehaviour
 
     void UpdateSwarmVolume(Vector2 center)
     {
+        // The fly swarm sound plays continuously, and just has its volume modified
         GameObject closest = GetClosestPlayer(center);
         if (closest != null)
         {
@@ -85,6 +84,7 @@ public class FlySwarmController : MonoBehaviour
             Vector2 closestPlayerVec = ((Vector2)closest.transform.position - (Vector2)fly.transform.position);
             if (closestPlayerVec.magnitude < playerClosenessThreshold)
             {
+                // Use a ratio of how close the player is to the fly so it'll move out of the way faster the closest it is
                 directionModifier = closestPlayerVec.normalized * -1f * (playerClosenessThreshold - closestPlayerVec.magnitude) / playerClosenessThreshold;
             }
         }
