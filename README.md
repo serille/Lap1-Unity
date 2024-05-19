@@ -25,6 +25,10 @@ Controls (standard US QWERTY layout):
 - Player 3 (Fizz): P (up), L (left), ' (right)
 - Player 4 (Mijji): G (up), V (left), N (right)
 
+Press ESC to open a menu. The menu content's changes depending on whether you are in an ongoing game or in the startup scene:
+- Startup Scene: show sound volume settings and a quit button
+- Game scene: show the scoreboard and a back to main button
+
 These controls are layout-independent, and are located where the mentioned keys are located on a US QWERTY keyboard even if you are using other layouts. For example AZERTY keyboards would use Z, Q and D for Player 2
 
 ## Links
