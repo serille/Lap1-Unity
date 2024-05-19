@@ -130,6 +130,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void Die() {
+        if (dead)
+        {
+            return;
+        }
         audioSource.clip = deathAudio;
         audioSource.Play();
         deathTime = Time.time;
@@ -165,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (otherBottom >= selfTop - playerCollisionYTolerance) {
             this.Die();
-        } else if (selfBottom >= otherTop - playerCollisionYTolerance) {
+        } else if (selfBottom >= otherTop - playerCollisionYTolerance && !other.gameObject.GetComponent<PlayerMovement>().dead) {
             ScoreTracker.Instance.AddScore(this.playerNum, other.gameObject.GetComponent<PlayerMovement>().GetPlayerNum());
             rb.AddForce(new Vector2(rb.velocity.x, bumperJumpIntensity * 10));
         }
